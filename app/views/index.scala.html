@@ -1,0 +1,102 @@
+@(form : Form[models.Event],list : List[Event])
+
+@main("Test") {
+
+	 <div class="container-fluid" style="margin-top:6%;">
+	  <div class="row">
+
+	  <div class="col-md-1"></div>
+
+	    <div class="col-md-4">
+	    	<div class="panel panel-default"><div class="panel-body">
+			  @helper.form(action = routes.Application.insert){
+
+				@(helper.inputText(
+					field = form("title"), 'class -> "form-control", '_label -> "タイトル"
+				))
+
+				@(helper.inputText(
+					field = form("date"), 'class -> "form-control dp", 'readonly ->"readonly", '_label -> "日"
+				))
+
+				<script type="text/javascript">
+				$(document).ready(function() {
+					$(function() {
+						$('.dp').datepicker({
+							format: 'yyyy/mm/dd',
+							language: 'ja',
+							autoclose: true,
+							clearBtn: true,
+						});
+					});
+				});
+				</script>
+
+				@(helper.inputText(
+					field = form("time"), 'class -> "form-control time", 'readonly ->"readonly", '_label -> "時間"
+				))
+
+				<script type="text/javascript">
+				$(document).ready(function() {
+					$(function() {
+					    $('.time').timepicker({
+					    	showInputs: false,
+					    	showMeridian: false
+					    });
+					});
+				});
+				</script>
+
+				@(helper.textarea(
+					field = form("text"), 'class -> "form-control", '_label -> "本文"
+				))
+
+				<button type="submit" class="btn btn-default btn-block btn-info">リストを追加　<span class="glyphicon glyphicon-ok" aria-hidden="true"></span> </button>
+
+				</div></div>
+
+			  }
+
+	    </div>
+	    <div class="col-md-6">
+	    	<div class="panel panel-default"><div class="panel-body">
+	    	  <form class="navbar-form navbar-left" method="post" action="/select">
+		        <div class="form-group">
+		          <input type="text" class="form-control dp" placeholder="サイト内検索" name="date">
+		        </div>
+		        <button type="submit" class="btn btn-default btn-info" name="sort">日付絞込検索　<span class="glyphicon glyphicon-search" aria-hidden="true"></span> </button>
+		        <button type="submit" class="btn btn-default btn-primary" name="time">指定日時でタイムライン作成　<span class="glyphicon glyphicon-time" aria-hidden="true"></span> </button>
+    		  </form>
+
+	    	</div></div>
+
+	    @for(list <- list){
+
+			<div class="panel panel-default"><div class="panel-body">
+				<legend><h4>@list.title<small>　@list.date　@list.time</small></h4></legend>
+
+				<p>
+				@Html(list.text)
+				</p>
+				<div class="pull-right">
+
+				   <form class="navbar-form navbar-left" method="post" action="/update">
+				     <button type="submit" class="btn btn-success" name="primary" value="@list.id">完了</button>
+				   </form>
+
+				   <form class="navbar-form navbar-left" method="post" action="/delete">
+				 	 <button type="submit" class="btn btn-danger" name="primary" value="@list.id">削除</button>
+				   </form>
+				</div>
+
+			</div></div>
+
+		}
+	    </div>
+
+	    <div class="col-md-1"></div>
+
+	  </div>
+	</div>
+
+}
